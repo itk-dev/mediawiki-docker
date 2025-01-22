@@ -1,0 +1,27 @@
+services:
+  phpfpm:
+    environment:
+      - PHP_MEMORY_LIMIT=256M
+    volumes:
+      - ./mediawiki/:/app
+      - ./LocalSettings.php:/app/LocalSettings.php
+      - ./LocalSettings-MoreSettings.php:/app/LocalSettings-MoreSettings.php
+
+  nginx:
+    environment:
+      NGINX_FPM_SERVICE: ${COMPOSE_PROJECT_NAME}-phpfpm-1:9000
+      NGINX_WEB_ROOT: /app
+      NGINX_MAX_BODY_SIZE: 5M
+    volumes:
+      - ./mediawiki/:/app
+      - ./spacer.jpg:/app/spacer.jpg
+      - ./robots.txt:/app/robots.txt
+
+  memcached:
+    image: memcached:alpine
+    networks:
+      - app
+    ports:
+      - '11211'
+    environment:
+      - MEMCACHED_CACHE_SIZE=64
