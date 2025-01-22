@@ -12,6 +12,10 @@ server {
     real_ip_recursive on;
     real_ip_header X-Forwarded-For;
 
+    location ~* ^/mediawiki/(.*)$ {
+        rewrite ^/mediawiki/(.*)$ /$1 last;
+    }
+
     location ~ ^/(index|load|api|thumb|opensearch_desc|rest|img_auth)\.php$ {
         fastcgi_buffers 16 32k;
         fastcgi_buffer_size 64k;
@@ -23,8 +27,8 @@ server {
         include fastcgi_params;
     }
 
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-        try_files $uri /index.php;
+    location ~ \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+        try_files $uri 404;
     }
 
     # Images
@@ -57,20 +61,9 @@ server {
         default_type text/plain;
     }
 
-    ## Uncomment the following code if you wish to use the installer/updater
-    ## installer/updater
-    #location /mw-config/ {
-    #    # Do this inside of a location so it can be negated
-    #    location ~ \.php$ {
-    #        include /etc/nginx/fastcgi_params;
-    #        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    #        fastcgi_pass 127.0.0.1:9000; # or whatever port your PHP-FPM listens on
-    #    }
-    #}
-
     # Handling for Mediawiki REST API, see [[mw:API:REST_API]]
     location /rest.php/ {
-        try_files $uri $uri/ /w/rest.php?$query_string;
+        try_files $uri $uri/ /rest.php?$query_string;
     }
 
     ## Uncomment the following code for handling image authentication
@@ -81,17 +74,11 @@ server {
 
     # Handling for the article path (pretty URLs)
     location /wiki/ {
-        rewrite ^/wiki/(?<pagename>.*)$ /index.php;
+        rewrite ^/wiki/(?<pagename>.*)$ /index.php last;
     }
 
-    # Allow robots.txt in case you have one
-    location = /robots.txt {
-    }
-
-    # Every other entry point will be disallowed.
-    # Add specific rules for other entry points/images as needed above this
     location / {
-        return 404;
+        try_files $uri $uri/ =404;
     }
 
     # serve static files directly
