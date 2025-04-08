@@ -5,7 +5,6 @@ services:
     volumes:
       - ./mediawiki/:/app
       - ./LocalSettings.php:/app/LocalSettings.php
-      - ./LocalSettings-MoreSettings.php:/app/LocalSettings-MoreSettings.php
 
   nginx:
     environment:
