@@ -1,2 +1,6 @@
+.env.docker.local
+
 mediawiki
 LocalSettings*
+
+logs
