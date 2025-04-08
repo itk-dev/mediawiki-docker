@@ -77,6 +77,11 @@ server {
         rewrite ^/wiki/(?<pagename>.*)$ /index.php last;
     }
 
+    # Block download of php files.
+    location ~ \.php$ {
+        return 404;
+    }
+
     location / {
         try_files $uri $uri/ =404;
     }
