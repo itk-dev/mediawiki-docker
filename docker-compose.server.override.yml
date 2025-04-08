@@ -4,7 +4,6 @@ services:
       - PHP_MEMORY_LIMIT=256M
     volumes:
       - ./mediawiki/:/app
-      - ./LocalSettings.php:/app/LocalSettings.php
 
   nginx:
     environment:
