@@ -44,6 +44,11 @@ server {
         deny all;
     }
 
+    location /cache {
+        # Deny access
+        deny all;
+    }
+
     # MediaWiki assets (usually images)
     location ~ ^/resources/(assets|lib|src) {
         try_files $uri 404;
